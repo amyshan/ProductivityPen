@@ -2,7 +2,7 @@ import time
 import serial
 import smtplib
 
-ser = serial.Serial('/dev/cu.usbmodem621', 9600)
+ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 
 prodtime = 0;
 nulltime = 0;
@@ -25,22 +25,11 @@ def get_average(array1):
 	average = 0;
 	for x in array1:
 		sum = sum + x;
-
-	average = sum/len(array1)
+	average = sum/float(len(array1))
 	return average
 
-def returndevarray(array2):
-	count2 = 0;
-	element = 0;
-	#devarray[len(array2)-1];
-	for i in range(len(array2)-1):
-		element = (array2[i+1] - array2[i])
-		devarray.append(element)
-	return devarray;
-
-
 while True:
-#while count < 10:
+	#initialize variables
 	xarray = []
 	yarray = []
 	zarray = []
@@ -52,24 +41,26 @@ while True:
 	xdavg = 0;
 	ydavg = 0;
 	zdavg = 0;
+
 	#append x,y,z raw values to data arrays in a 10 second interval
 	timein = time.time()   # time interval = 10 seconds
+	
 	#while time.time() < timeout:# while within interval, append values
 	while count < 10:
 		serialvalues = ser.readline()
-		#values = serialvalues
-		values = "".join([chr(c) for c in serialvalues])
+		values = serialvalues
+		#values = "".join([chr(c) for c in serialvalues])
 		#print("values:")
 		numstring = ""
 		numarray = []
 		for x in values:
 			if x == " ":
-				num = int(float(numstring))
+				num = float(numstring)
 				numstring = ""
 				numarray.append(num)
 			else:
 				numstring += x
-		num = int(numstring)
+		num = float(numstring)
 		numstring = ""
 		numarray.append(num)
 
@@ -89,39 +80,24 @@ while True:
 
 		count = count + 1
 
-	xdavg = get_average(xdevarray)
-	ydavg = get_average(ydevarray)
-	zdavg = get_average(zdevarray)
+	xdavg = float(get_average(xdevarray))
+	
+	ydavg = float(get_average(ydevarray))
+	
+	zdavg = float(get_average(zdevarray))
 
-	print("xarray")
-	print(xarray)
-	print("xdev")
-	print(xdevarray)
-	print("avgs")
+	print("X avg:")
 	print(xdavg)
+	print("Y avg:")
 	print(ydavg)
+	print("Z avg:")
 	print(zdavg)
 
 	timeout = time.time()
 	timeelapsed = timeout - timein
+	print("time elapsed:")
 	print(timeelapsed)
-# xarray = [-2,-4,6,14,4]
-# yarray = [3,-1,10,8,2]
-# zarray = [100,-60,2,10,5]
-	#Once arrays have been filled, fill dev arrays
-	#X ARRAY
-	#fill xdev array & get average
-#xdevarray = returndevarray(xarray);
-#for x in xdevarray:
-#	print(x)
-#xdavg = get_average(xdevarray);
-#ydevarray = returndevarray(yarray)
-#ydavg = get_average(ydevarray)
-#zdevarray = returndevarray(zarray)
-#zdavg = get_average(zdevarray)
-#print(xdavg)
-#print(ydavg)
-#print(zdavg)
+
 
 
 #Case 1: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15
