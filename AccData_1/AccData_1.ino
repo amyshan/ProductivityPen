@@ -90,6 +90,7 @@ void setup() {
   Serial.print(yVal, DEC);
   Serial.print(" ");
   Serial.println(zVal, DEC);
+  Serial.print(" ");
   delay(1000);
 }
 
