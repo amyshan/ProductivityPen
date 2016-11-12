@@ -11,14 +11,6 @@ x0 = 0;
 y0 = 0;
 z0 = 0;
 
-xwritemin = 0;
-xwritemax = 0;
-ywritemin = 0;
-ywritemax = 0;
-zwritemin = 0;
-zwritemax = 0;
-
-
 def get_average(array1):
 	averagecounter = 0;
 	sum = 0;
@@ -81,9 +73,7 @@ while True:
 		count = count + 1
 
 	xdavg = abs(float(get_average(xdevarray)))
-
 	ydavg = abs(float(get_average(ydevarray)))
-
 	zdavg = abs(float(get_average(zdevarray)))
 
 	print("X avg:")
@@ -98,19 +88,24 @@ while True:
 	print("time elapsed:")
 	print(timeelapsed)
 
-
+	print(prodtime)
+	print(nulltime)
 #Case 1: Still - x: 0 to 5, y: 0 to 5, z: 0 to 5
 #Case 2: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15
 #Case 3: Fidgeting - x: 15+, y: 15+ ,z: 15+
 
 #Case 1 - Still
-if xdavg < 0.2 and ydavg < 0.2 and zdavg < 0.2:
 	nulltime += timeelapsed
-#Case 2 - Writing
-if xdavg > 0.2 and xdavg < 1.4 and ydavg > 0.2 and ydavg < 1.4 and zdavg > 0.2 and zdavg < 1.4:
-	prodtime += timeelapsed
-#Case 3 - Fidgeting
-if ydavg > 1.4 or (xdavg > 1.4 or ydavg > 1.4):
-	nulltime += timeelasped
-print(prodtime)
-print(nulltime)
+	if xdavg < 0.2 and ydavg < 0.2 and zdavg < 0.2:
+		nulltime += timeelapsed
+	#Case 2 - Writing
+	if xdavg > 0.2 and xdavg < 1.4 and ydavg > 0.2 and ydavg < 1.4 and zdavg > 0.2 and zdavg < 1.4:
+		prodtime += timeelapsed
+	#Case 3 - Fidgeting
+	if ydavg > 1.4 or (xdavg > 1.4 or ydavg > 1.4):
+		nulltime += timeelasped
+	print(prodtime)
+	print(nulltime)
+	if nulltime > 15:
+		ser.write(9999999)
+		print("BUZZ")
