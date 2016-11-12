@@ -2,15 +2,7 @@ import time
 import serial
 import smtplib
 
-ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
-xarray = []
-yarray = []
-zarray = []
-xdevarray = []
-ydevarray= []
-zdevarray= []
-count = 0;
-devarray = []
+ser = serial.Serial('/dev/cu.usbmodem621', 9600)
 
 prodtime = 0;
 nulltime = 0;
@@ -18,10 +10,6 @@ nulltime = 0;
 x0 = 0;
 y0 = 0;
 z0 = 0;
-
-xdavg = 0;
-ydavg = 0;
-zdavg = 0;
 
 xwritemin = 0;
 xwritemax = 0;
@@ -51,17 +39,27 @@ def returndevarray(array2):
 	return devarray;
 
 
-#while True:
-while count < 10:
-	count = 0
+while True:
+#while count < 10:
+	xarray = []
+	yarray = []
+	zarray = []
+	xdevarray = []
+	ydevarray= []
+	zdevarray= []
+	count = 0;
+	devarray = []
+	xdavg = 0;
+	ydavg = 0;
+	zdavg = 0;
 	#append x,y,z raw values to data arrays in a 10 second interval
 	timein = time.time()   # time interval = 10 seconds
 	#while time.time() < timeout:# while within interval, append values
 	while count < 10:
-		values = ser.readline()
-		#values = '-3 0 60'
+		serialvalues = ser.readline()
+		#values = serialvalues
+		values = "".join([chr(c) for c in serialvalues])
 		#print("values:")
-		#print(values)
 		numstring = ""
 		numarray = []
 		for x in values:
@@ -75,9 +73,6 @@ while count < 10:
 		numstring = ""
 		numarray.append(num)
 
-		print(numarray)
-		print(time.time())
-		print(timeout)
 		x0 = numarray[0]
 		y0 = numarray[1]
 		z0 = numarray[2]
@@ -93,18 +88,23 @@ while count < 10:
 			zdevarray.append(zarray[len(zarray)-2] - zarray[len(zarray)-1])
 
 		count = count + 1
-		print(xdevarray)
-		print(xarray)
+
 	xdavg = get_average(xdevarray)
 	ydavg = get_average(ydevarray)
 	zdavg = get_average(zdevarray)
+
+	print("xarray")
+	print(xarray)
+	print("xdev")
+	print(xdevarray)
+	print("avgs")
 	print(xdavg)
 	print(ydavg)
 	print(zdavg)
 
-timeout = time.time()
-timeelapsed = timeout - timein
-print(timeelapsed)
+	timeout = time.time()
+	timeelapsed = timeout - timein
+	print(timeelapsed)
 # xarray = [-2,-4,6,14,4]
 # yarray = [3,-1,10,8,2]
 # zarray = [100,-60,2,10,5]
