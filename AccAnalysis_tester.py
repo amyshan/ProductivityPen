@@ -2,7 +2,7 @@ import time
 import serial
 import smtplib
 
-ser = serial.Serial('/dev/cu.usbmodem621', 9600)
+ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 xarray = []
 yarray = []
 zarray = []
@@ -60,22 +60,24 @@ while count < 10:
 	while count < 10:
 		values = ser.readline()
 		#values = '-3 0 60'
-		print("values:")
-		print(values)
+		#print("values:")
+		#print(values)
 		numstring = ""
 		numarray = []
 		for x in values:
-			print(x)
 			if x == " ":
 				num = int(float(numstring))
 				numstring = ""
 				numarray.append(num)
 			else:
 				numstring += x
-		num = int(float(numstring))
+		num = int(numstring)
 		numstring = ""
 		numarray.append(num)
-		#print(numarray)
+
+		print(numarray)
+		print(time.time())
+		print(timeout)
 		x0 = numarray[0]
 		y0 = numarray[1]
 		z0 = numarray[2]
@@ -120,6 +122,7 @@ print(timeelapsed)
 #print(xdavg)
 #print(ydavg)
 #print(zdavg)
+
 
 #Case 1: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15
 #Case 2: Still - x: 0 to 5, y: 0 to 5, z: 0 to 5
