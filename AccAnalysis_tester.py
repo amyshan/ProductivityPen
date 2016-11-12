@@ -2,7 +2,7 @@ import time
 import serial
 import smtplib
 
-#ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
+ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 xarray = []
 yarray = []
 zarray = []
@@ -51,39 +51,41 @@ def returndevarray(array2):
 	return devarray;
 
 
-#while True:
+while True:
 	
 	#append x,y,z raw values to data arrays in a 10 second interval
-	#timeout = time.time() + 10   # time interval = 10 seconds 
-	# while time.time() < timeout:# while within interval, append values
-	# 	values = ser.readline()	
-	# 	print(values[9])
-	# 	#values = "-4 -10 50 "
-	# 	numstring = ""
-	# 	numarray = []
-	# 	for x in values:
-	# 		print(x)
-	# 		if x == " ":
-	# 			num = int(float(numstring))
-	# 			numstring = ""
-	# 			numarray.append(num)
-	# 		else:
-	# 			numstring += x
-	# 			print(numarray)
-	# 	x0 = numarray[0]
-	# 	y0 = numarray[1]
-	# 	z0 = numarray[2]
+	timeout = time.time() + 10   # time interval = 10 seconds 
+	while time.time() < timeout:# while within interval, append values
+		values = ser.readline()	
+		#print(values[9])
+		#values = "-4 -10 50 "
+		print("values:")
+		print(values)
+		numstring = ""
+		numarray = []
+		for x in values:
+			print(x)
+			if x == " ":
+				num = int(float(numstring))
+				numstring = ""
+				numarray.append(num)
+			else:
+				numstring += x
+				print(numarray)
+		x0 = numarray[0]
+		y0 = numarray[1]
+		z0 = numarray[2]
 		
 		#add init values to x y and z array
-	# 	xarray[count] = x0;
-	# 	yarray[count] = y0;
-	# 	zarray[count] = z0;
-	# 	count += 1;
-	# count = 0;
+		xarray[count] = x0;
+		yarray[count] = y0;
+		zarray[count] = z0;
+		count += 1;
+	count = 0;
 
-xarray = [-2,-4,6,14,4]
-yarray = [3,-1,10,8,2]	
-zarray = [100,-60,2,10,5]
+# xarray = [-2,-4,6,14,4]
+# yarray = [3,-1,10,8,2]	
+# zarray = [100,-60,2,10,5]
 	#Once arrays have been filled, fill dev arrays
 	#X ARRAY
 	#fill xdev array & get average
