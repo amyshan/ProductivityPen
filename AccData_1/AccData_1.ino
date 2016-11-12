@@ -71,7 +71,7 @@ int button = 2; //Push button on data pin 2
 void setup() {
   Serial.begin(9600);           // Use the Serial Monitor window at 9600 baud
   
-  pinMode(button, INPUT);  //Initialize push-button
+  //pinMode(button, INPUT);  //Initialize push-button
   
   // Set the g force sensitivity: 2=2g, 4=4g, 8-8g
   accel.initSensitivity(2);
@@ -114,13 +114,13 @@ void setup() {
   Serial.print(yVal, DEC);
   Serial.print(" ");
   Serial.println(zVal, DEC);
-  Serial.print(" ");
-  delay(1000);
+  //Serial.print(" ");
+  delay(100);
 }
 
 void loop() {
   //Sample code below
-  while (digitalRead(button) == HIGH) {
+  //while (digitalRead(button) == HIGH) {
  
   //Begin the continuous data loop again
   xVal = accel.readAxis('x');   // Read X Axis
@@ -134,8 +134,7 @@ void loop() {
   Serial.print(" ");
   
   Serial.println(zVal, DEC);
-  Serial.print(" ");
-  delay(1000);
+  //Serial.print(" ");
+  delay(100);
   
   }
-}

@@ -2,7 +2,7 @@ import time
 import serial
 import smtplib
 
-ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
+ser = serial.Serial('/dev/cu.usbmodem621', 9600)
 
 prodtime = 0;
 nulltime = 0;
@@ -44,18 +44,18 @@ while True:
 
 	#append x,y,z raw values to data arrays in a 10 second interval
 	timein = time.time()   # time interval = 10 seconds
-	
+
 	#while time.time() < timeout:# while within interval, append values
 	while count < 10:
 		serialvalues = ser.readline()
-		values = serialvalues
-		#values = "".join([chr(c) for c in serialvalues])
-		#print("values:")
+		#values = serialvalues
+		values = "".join([chr(c) for c in serialvalues])
+		#print(values)
 		numstring = ""
 		numarray = []
 		for x in values:
 			if x == " ":
-				num = float(numstring)
+				num = int(float(numstring))
 				numstring = ""
 				numarray.append(num)
 			else:
@@ -80,11 +80,11 @@ while True:
 
 		count = count + 1
 
-	xdavg = float(get_average(xdevarray))
-	
-	ydavg = float(get_average(ydevarray))
-	
-	zdavg = float(get_average(zdevarray))
+	xdavg = abs(float(get_average(xdevarray)))
+
+	ydavg = abs(float(get_average(ydevarray)))
+
+	zdavg = abs(float(get_average(zdevarray)))
 
 	print("X avg:")
 	print(xdavg)
@@ -99,19 +99,18 @@ while True:
 	print(timeelapsed)
 
 
-
-#Case 1: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15
-#Case 2: Still - x: 0 to 5, y: 0 to 5, z: 0 to 5
+#Case 1: Still - x: 0 to 5, y: 0 to 5, z: 0 to 5
+#Case 2: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15
 #Case 3: Fidgeting - x: 15+, y: 15+ ,z: 15+
 
-#Case 2 - Still
-if xdavg > 5 and xdavg < 15 and ydavg > 0 and ydavg < 15 and zdavg > 5 and zdavg < 15:
-	nulltime += 10
-#Case 1 - Writing
-if xdavg > 5 and xdavg < 15 and ydavg > 0 and ydavg < 15 and zdavg > 5 and zdavg < 15:
-	prodtime += 10
+#Case 1 - Still
+if xdavg < 0.2 and ydavg < 0.2 and zdavg < 0.2:
+	nulltime += timeelapsed
+#Case 2 - Writing
+if xdavg > 0.2 and xdavg < 1.4 and ydavg > 0.2 and ydavg < 1.4 and zdavg > 0.2 and zdavg < 1.4:
+	prodtime += timeelapsed
 #Case 3 - Fidgeting
-if ydavg > 15 and (xdavg > 15 or ydavg > 15):
-	nulltime += 10
+if ydavg > 1.4 or (xdavg > 1.4 or ydavg > 1.4):
+	nulltime += timeelasped
 print(prodtime)
 print(nulltime)
