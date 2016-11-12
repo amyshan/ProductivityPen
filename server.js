@@ -48,9 +48,37 @@
 var express = require('express')
     app     = express();
 
+// basic route for home page
 app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 })
 
 app.listen(1337);
 console.log('localhost:1337');
+
+var adminRouter = express.Router();
+
+// route middleware through router.use()
+// happens every request
+// order of route vs middleware is important; place middleware before routes
+adminRouter.use(function (req, res, next) {
+    console.log(req.method, req.url);
+    // lets Express know that function is complete and can proceed with next
+    // middleware or continue routing
+    next();
+})
+
+// applied routes to instance of router; specified root dir as admin
+adminRouter.get('/', function (req, res) {
+    res.send('I am the dashboard');
+})
+
+adminRouter.get('/users', function (req, res) {
+    res.send('I show all the users');
+})
+
+adminRouter.get('/posts', function(req, res) {
+    res.send('I show all the posts');
+})
+
+app.use('/admin', adminRouter);
