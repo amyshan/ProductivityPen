@@ -1,0 +1,16 @@
+{
+  "name": "http-server",
+  "version": "1.0.0",
+  "description": "Code for Productivity Pen arduino -> web server",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amyshan/ProductivityPen"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongoose": "latest"
+  },
+  "author": "Amy Shan",
+  "homepage": "https://github.com/amyshan/ProductivityPen"
+}
