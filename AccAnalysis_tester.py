@@ -82,11 +82,9 @@ while True:
 		z0 = numarray[2]
 
 		#add init values to x y and z array
-		xarray[count] = x0;
-		yarray[count] = y0;
-		zarray[count] = z0;
-		count += 1;
-	count = 0;
+		xarray.append(x0);
+		yarray.append(y0);
+		zarray.append(z0);
 
 # xarray = [-2,-4,6,14,4]
 # yarray = [3,-1,10,8,2]
