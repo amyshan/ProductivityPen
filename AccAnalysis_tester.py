@@ -40,6 +40,7 @@ def get_average(array1):
 
 	average = sum/len(array1)
 	return average
+
 def returndevarray(array2):
 	count2 = 0;
 	element = 0;
@@ -47,15 +48,16 @@ def returndevarray(array2):
 	for i in range(len(array2)-1):
 		element = (array2[i+1] - array2[i])
 		devarray.append(element)
-
 	return devarray;
 
 
-while True:
-
+#while True:
+while count < 10:
+	count = 0
 	#append x,y,z raw values to data arrays in a 10 second interval
-	timeout = time.time() + 10   # time interval = 10 seconds
-	while time.time() < timeout:# while within interval, append values
+	timein = time.time()   # time interval = 10 seconds
+	#while time.time() < timeout:# while within interval, append values
+	while count < 10:
 		values = ser.readline()
 		#values = '-3 0 60'
 		print("values:")
@@ -65,18 +67,15 @@ while True:
 		for x in values:
 			print(x)
 			if x == " ":
-				print(numstring)
-				print(numarray)
 				num = int(float(numstring))
 				numstring = ""
 				numarray.append(num)
 			else:
-			#if x == "0"or"1"or"2"or"3"or"4"or"5"or"6"or"7"or"8"or"9":
 				numstring += x
 		num = int(float(numstring))
 		numstring = ""
 		numarray.append(num)
-		print(numarray)
+		#print(numarray)
 		x0 = numarray[0]
 		y0 = numarray[1]
 		z0 = numarray[2]
@@ -86,32 +85,48 @@ while True:
 		yarray.append(y0);
 		zarray.append(z0);
 
+		if count > 0:
+			xdevarray.append(xarray[len(xarray)-2] - xarray[(len(xarray)-1)])
+			ydevarray.append(yarray[len(yarray)-2] - yarray[len(yarray)-1])
+			zdevarray.append(zarray[len(zarray)-2] - zarray[len(zarray)-1])
+
+		count = count + 1
+		print(xdevarray)
+		print(xarray)
+	xdavg = get_average(xdevarray)
+	ydavg = get_average(ydevarray)
+	zdavg = get_average(zdevarray)
+	print(xdavg)
+	print(ydavg)
+	print(zdavg)
+
+timeout = time.time()
+timeelapsed = timeout - timein
+print(timeelapsed)
 # xarray = [-2,-4,6,14,4]
 # yarray = [3,-1,10,8,2]
 # zarray = [100,-60,2,10,5]
 	#Once arrays have been filled, fill dev arrays
 	#X ARRAY
 	#fill xdev array & get average
-xdevarray = returndevarray(xarray);
-for x in xdevarray:
-	print(x)
-xdavg = get_average(xdevarray);
-	# y dev array
-ydevarray = returndevarray(yarray)
-ydavg = get_average(ydevarray)
-	#z array
-zdevarray = returndevarray(zarray)
-zdavg = get_average(zdevarray)
-print(xdavg)
-print(ydavg)
-print(zdavg)
+#xdevarray = returndevarray(xarray);
+#for x in xdevarray:
+#	print(x)
+#xdavg = get_average(xdevarray);
+#ydevarray = returndevarray(yarray)
+#ydavg = get_average(ydevarray)
+#zdevarray = returndevarray(zarray)
+#zdavg = get_average(zdevarray)
+#print(xdavg)
+#print(ydavg)
+#print(zdavg)
 
 #Case 1: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15
 #Case 2: Still - x: 0 to 5, y: 0 to 5, z: 0 to 5
 #Case 3: Fidgeting - x: 15+, y: 15+ ,z: 15+
 
 #Case 2 - Still
-if xdavg > 5 and xdavg < 15 and ydavg > 0 and ydavg < 15 and zdavg > 5 and zdavg < 15 :
+if xdavg > 5 and xdavg < 15 and ydavg > 0 and ydavg < 15 and zdavg > 5 and zdavg < 15:
 	nulltime += 10
 #Case 1 - Writing
 if xdavg > 5 and xdavg < 15 and ydavg > 0 and ydavg < 15 and zdavg > 5 and zdavg < 15:
