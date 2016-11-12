@@ -12,6 +12,8 @@ zdevarray= []
 count = 0;
 devarray = []
 
+prodtime = 0;
+nulltime = 0;
 
 x0 = 0;
 y0 = 0;
@@ -21,31 +23,35 @@ xdavg = 0;
 ydavg = 0;
 zdavg = 0;
 
+xwritemin = 0;
+xwritemax = 0;
+ywritemin = 0;
+ywritemax = 0;
+zwritemin = 0;
+zwritemax = 0;
+
+
 def get_average(array1):
 	averagecounter = 0;
 	sum = 0;
 	average = 0;
 	for x in array1:
 		sum = sum + x;
+
 	average = sum/len(array1)
 	return average
-
 def returndevarray(array2):
 	count2 = 0;
 	element = 0;
 	#devarray[len(array2)-1];
-	for i in range(len(array2)):
-		element = array2[i+1] - array2[i]
-		devarray.append
-	if count2 < len(array2):
-		print(count2)
-		devarray[count2] = (array2[count2+1]-array2[count2]);
-		count2 += 1;
+	for i in range(len(array2)-1):
+		element = (array2[i+1] - array2[i])
+		devarray.append(element)
 		
 	return devarray;
 
 
-while True:
+#while True:
 	
 	#append x,y,z raw values to data arrays in a 10 second interval
 	#timeout = time.time() + 10   # time interval = 10 seconds 
@@ -74,25 +80,40 @@ while True:
 	# 	zarray[count] = z0;
 	# 	count += 1;
 	# count = 0;
-	xarray = [-2,-4,6,14,4]
-	yarray = [3,-1,10,8,2]
-	zarray = [20,-60,2,10,5]
+
+xarray = [-2,-4,6,14,4]
+yarray = [3,-1,10,8,2]	
+zarray = [100,-60,2,10,5]
 	#Once arrays have been filled, fill dev arrays
 	#X ARRAY
 	#fill xdev array & get average
-	xdevarray = returndevarray(xarray);
-	xdavg = get_average(xdevarray);
+xdevarray = returndevarray(xarray);
+for x in xdevarray:
+	print(x)
+xdavg = get_average(xdevarray);
 	# y dev array
-	ydevarray = returndevarray(yarray)
-	ydavg = get_average(ydevarray)
+ydevarray = returndevarray(yarray)
+ydavg = get_average(ydevarray)
 	#z array
-	zdevarray = returndevarray(zarray)
-	zdavg = returndevarray(zarray)
-	print(xdavg)
-	print(ydavg)
-	print(zdavg)
+zdevarray = returndevarray(zarray)
+zdavg = get_average(zdevarray)
+print(xdavg)
+print(ydavg)
+print(zdavg)
 
+#Case 1: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15 
+#Case 2: Still - x: 0 to 5, y: 0 to 5, z: 0 to 5 
+#Case 3: Fidgeting - x: 15+, y: 15+ ,z: 15+ 
 
-
-	
+#Case 2 - Still
+if xdavg > 5 and xdavg < 15 and ydavg > 0 and ydavg < 15 and zdavg > 5 and zdavg < 15 :
+	nulltime += 10
+#Case 1 - Writing
+if xdavg > 5 and xdavg < 15 and ydavg > 0 and ydavg < 15 and zdavg > 5 and zdavg < 15:
+	prodtime += 10
+#Case 3 - Fidgeting
+if ydavg > 15 and (xdavg > 15 or ydavg > 15):
+	nulltime += 10
+print(prodtime)
+print(nulltime)
 
