@@ -65,51 +65,77 @@
 MMA_7455 accel = MMA_7455();    // Make MMA7455 object
 
 char xVal, yVal, zVal;          // Return value variables
-
+char xinit, yinit, zinit;
+int button = 2; //Push button on data pin 2
 
 void setup() {
   Serial.begin(9600);           // Use the Serial Monitor window at 9600 baud
   
+  pinMode(button, INPUT);  //Initialize push-button
+  
   // Set the g force sensitivity: 2=2g, 4=4g, 8-8g
   accel.initSensitivity(2);
   
- // Provide oiffset values so that sensor displays 0, 0, 63
- //  (or close to it) when positioned on a flat surface, all pins
- //  facing down
+ // Provide offset values so that sensor displays 0, 0, 63 when 
+ //positioned on a flat surface, all pins facing down
  
- // Update the numbers with your own values from the MMA7455_CalibrateOffset sketch.
-  accel.calibrateOffset(57, 85, +13);
-  xVal = accel.readAxis('x');   // Read X Axis
-  yVal = accel.readAxis('y');   // Read Y Axis
-  zVal = accel.readAxis('z');   // Read Z Axis
+ // Find initial x,y,z values, and calibrate accelerometer 
+  xVal = accel.readAxis('x');
+  yVal = accel.readAxis('y');
+  zVal = accel.readAxis('z');
   
-  // Display them in the Serial Monitor window.
-  //Serial.print("X: = ");
+  //make sure the signs are right
+  if (xVal > 0) {
+    xinit = -xVal;}
+    else {
+      xinit = -xVal;
+    }
+  
+  if (yVal > 0) {
+    yinit = -yVal;}
+    else {
+      yinit = -yVal;
+    }
+  
+  if (zVal > 63) {
+    zinit = -zVal+63;}
+    else {
+      zinit = 63-zVal;
+    }
+  //Calibrate accel
+  accel.calibrateOffset(xinit, yinit, zinit);
+
+  //Complete loop number 1 in the setup
+  xVal = accel.readAxis('x');
+  yVal = accel.readAxis('y');
+  zVal = accel.readAxis('z');
   Serial.print(xVal, DEC);
   Serial.print(" ");
   Serial.print(yVal, DEC);
   Serial.print(" ");
   Serial.println(zVal, DEC);
-  //Serial.print(" ");
+  Serial.print(" ");
   delay(1000);
 }
 
 void loop() {
+  //Sample code below
+  while (digitalRead(button) == HIGH) {
  
-  // Get the X, Y, anx Z axis values from the device
+  //Begin the continuous data loop again
   xVal = accel.readAxis('x');   // Read X Axis
   yVal = accel.readAxis('y');   // Read Y Axis
   zVal = accel.readAxis('z');   // Read Z Axis
   
-  // Display them in the Serial Monitor window.
-  //Serial.print("X: = ");
   Serial.print(xVal, DEC);
   Serial.print(" ");
+  
   Serial.print(yVal, DEC);
   Serial.print(" ");
+  
   Serial.println(zVal, DEC);
-  //Serial.print(" ");
+  Serial.print(" ");
   delay(1000);
   
-  
+  }
 }
