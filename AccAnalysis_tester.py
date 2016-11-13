@@ -2,7 +2,7 @@ import time
 import serial
 import smtplib
 
-ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
+ser = serial.Serial('/dev/cu.usbmodem621', 9600)
 
 prodtime = 0;
 nulltime = 0;
@@ -40,8 +40,8 @@ while True:
 	#while time.time() < timeout:# while within interval, append values
 	while count < 10:
 		serialvalues = ser.readline()
-		values = serialvalues
-		#values = "".join([chr(c) for c in serialvalues])
+		#values = serialvalues
+		values = "".join([chr(c) for c in serialvalues])
 		#print(values)
 		numstring = ""
 		numarray = []
@@ -115,5 +115,3 @@ while True:
 
 	if nulltime > 5:
 		ser.write("B")
-
-
