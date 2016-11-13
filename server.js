@@ -1,27 +1,3 @@
-/* Practice tutorial for deploying a web server using Node.JS
-* http://blog.modulus.io/build-your-first-http-server-in-nodejs
-* */
-
-// //Lets require/import the HTTP module
-// var http = require('http');
-//
-// //Lets define a port we want to listen to
-// const PORT=8080;
-//
-// //We need a function which handles requests and send response
-// function handleRequest(request, response){
-//     response.end('It Works!! Path Hit: ' + request.url);
-// }
-//
-// //Create a server
-// var server = http.createServer(handleRequest);
-//
-// //Lets start our server
-// server.listen(PORT, function(){
-//     //Callback triggered when server is successfully listening. Hurray!
-//     console.log("Server listening on: http://localhost:%s", PORT);
-// });
-
 /* MEAN Machine Node Server Demo
 *   this version doesn't use Express, just barebones Node
 * */
@@ -106,3 +82,6 @@ app.route('/login')
         console.log('processing');
         res.send('processing the login form!');
     });
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/test');
