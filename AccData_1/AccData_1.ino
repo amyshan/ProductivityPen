@@ -67,95 +67,101 @@ MMA_7455 accel = MMA_7455();    // Make MMA7455 object
 char xVal, yVal, zVal;          // Return value variables
 char xinit, yinit, zinit;
 int button = 12; //Push button on data pin 12
-int ledPin = 13; //LedPin on 13
+int ledpin = 13; //LedPin on 13
 char nulltime;
 int buttonState = 0;
-boolean startrunning;
+boolean startrunning = false;
 
 void setup() {
   Serial.begin(9600);           // Use the Serial Monitor window at 9600 baud
   pinMode(button, INPUT); //Initialize push-button
-  pinMode(ledPin, OUTPUT); //Initialize LED
+  pinMode(ledpin, OUTPUT); //Initialize LED
   // Set the g force sensitivity: 2=2g, 4=4g, 8-8g
   accel.initSensitivity(2);
 
-  buttonState = digitalRead(button);
-  if (buttonState == HIGH) {
-    Serial.print("STARTRUNNING");
-    startrunning = true;
+  // Find initial x,y,z values, and calibrate accelerometer
+  xVal = accel.readAxis('x');
+  yVal = accel.readAxis('y');
+  zVal = accel.readAxis('z');
 
-    // Find initial x,y,z values, and calibrate accelerometer
-    xVal = accel.readAxis('x');
-    yVal = accel.readAxis('y');
-    zVal = accel.readAxis('z');
-
-    //make sure the signs are right
-    if (xVal > 0) {
-      xinit = -xVal;
-    }
-    else {
-      xinit = -xVal;
-    }
-    if (yVal > 0) {
-      yinit = -yVal;
-    }
-    else {
-      yinit = -yVal;
-    }
-    if (zVal > 63) {
-      zinit = -zVal + 63;
-    }
-    else {
-      zinit = 63 - zVal;
-    }
-
-    //Calibrate accel
-    accel.calibrateOffset(xinit, yinit, zinit);
-
-    //Complete loop number 1 in the setup
-    xVal = accel.readAxis('x');
-    yVal = accel.readAxis('y');
-    zVal = accel.readAxis('z');
-    Serial.print(xVal, DEC);
-    Serial.print(" ");
-    Serial.print(yVal, DEC);
-    Serial.print(" ");
-    Serial.print(zVal, DEC);
-    delay(100);
+  //make sure the signs are right
+  if (xVal > 0) {
+    xinit = -xVal;
   }
+  else {
+    xinit = -xVal;
+  }
+  if (yVal > 0) {
+    yinit = -yVal;
+  }
+  else {
+    yinit = -yVal;
+  }
+  if (zVal > 63) {
+    zinit = -zVal + 63;
+  }
+  else {
+    zinit = 63 - zVal;
+  }
+
+  //Calibrate accel
+  accel.calibrateOffset(xinit, yinit, zinit);
+
+  //Complete loop number 1 in the setup
+  xVal = accel.readAxis('x');
+  yVal = accel.readAxis('y');
+  zVal = accel.readAxis('z');
+  Serial.print(xVal, DEC);
+  Serial.print(" ");
+  Serial.print(yVal, DEC);
+  Serial.print(" ");
+  Serial.print(zVal, DEC);
+  delay(100);
 }
+
 
 void loop() {
 
-  while (startrunning) {
-
-    //Begin the continuous data loop again
-    xVal = accel.readAxis('x');   // Read X Axis
-    yVal = accel.readAxis('y');   // Read Y Axis
-    zVal = accel.readAxis('z');   // Read Z Axis
-
-    if (Serial.available()) { // check whether Python sent anything
-      digitalWrite(13, HIGH); //turn on LED
-      //Serial.println("You've been idle for too long!"); // acknowledge data reception
-    }
-
-
-    Serial.print(xVal, DEC);
-    Serial.print(" ");
-
-    Serial.print(yVal, DEC);
-    Serial.print(" ");
-
-    Serial.println(zVal, DEC);
-    //Serial.print(" ");
-    delay(100);
-
-    buttonState = digitalRead(button);
-    if (buttonState == HIGH) {
-      startrunning = false;
-      Serial.print("STOPRUNNING");
-      break;
-    }
+  buttonState = digitalRead(button);
+  if (buttonState == HIGH) {
+    delay(2000);
+    //Serial.println("STARTRUNNING");
+    startrunning = true;
   }
+    while (startrunning) {
+
+      //Begin the continuous data loop again
+      xVal = accel.readAxis('x');   // Read X Axis
+      yVal = accel.readAxis('y');   // Read Y Axis
+      zVal = accel.readAxis('z');   // Read Z Axis
+
+      if (Serial.available() > 0) {
+        digitalWrite(ledpin, HIGH);
+        delay(3000);
+        digitalWrite(ledpin, LOW);
+        delay(1000);
+        Serial.flush();
+      }
+
+
+      Serial.print(xVal, DEC);
+      Serial.print(" ");
+
+      Serial.print(yVal, DEC);
+      Serial.print(" ");
+
+      Serial.println(zVal, DEC);
+      //Serial.print(" ");
+      delay(100);
+
+      buttonState = digitalRead(button);
+      if (buttonState == HIGH) {
+        startrunning = false;
+        //Serial.println("STOPRUNNING");
+        delay(2000);
+        break;
+      }
+    }
+  
 }
 
