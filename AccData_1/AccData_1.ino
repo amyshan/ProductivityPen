@@ -67,18 +67,15 @@ MMA_7455 accel = MMA_7455();    // Make MMA7455 object
 char xVal, yVal, zVal;          // Return value variables
 char xinit, yinit, zinit;
 int button = 2; //Push button on data pin 2
+int buzzer = 3; //Buzzer for nulltime
+char nulltime;
 
 void setup() {
   Serial.begin(9600);           // Use the Serial Monitor window at 9600 baud
-  
-  //pinMode(button, INPUT);  //Initialize push-button
-  
+  pinMode(button, INPUT);  //Initialize push-button
   // Set the g force sensitivity: 2=2g, 4=4g, 8-8g
   accel.initSensitivity(2);
   
- // Provide offset values so that sensor displays 0, 0, 63 when 
- //positioned on a flat surface, all pins facing down
- 
  // Find initial x,y,z values, and calibrate accelerometer 
   xVal = accel.readAxis('x');
   yVal = accel.readAxis('y');
@@ -90,18 +87,17 @@ void setup() {
     else {
       xinit = -xVal;
     }
-  
   if (yVal > 0) {
     yinit = -yVal;}
     else {
       yinit = -yVal;
     }
-  
   if (zVal > 63) {
     zinit = -zVal+63;}
     else {
       zinit = 63-zVal;
     }
+    
   //Calibrate accel
   accel.calibrateOffset(xinit, yinit, zinit);
 
@@ -114,18 +110,27 @@ void setup() {
   Serial.print(yVal, DEC);
   Serial.print(" ");
   Serial.println(zVal, DEC);
-  //Serial.print(" ");
   delay(100);
 }
 
 void loop() {
-  //Sample code below
-  //while (digitalRead(button) == HIGH) {
+  if digitalRead
+  while (digitalRead(button) == HIGH) {
  
   //Begin the continuous data loop again
   xVal = accel.readAxis('x');   // Read X Axis
   yVal = accel.readAxis('y');   // Read Y Axis
   zVal = accel.readAxis('z');   // Read Z Axis
+
+  if(Serial.available()){ // only send data back if data has been sent
+    nulltime = Serial.read(); // read the incoming data
+    if (nulltime == 'B') {
+      digitalWrite(13, HIGH); //turn on LED
+      Serial.println("You've been idle for too long!"); // acknowledge data reception
+    }
+  }
+
+  nulltime = 'N';
   
   Serial.print(xVal, DEC);
   Serial.print(" ");
@@ -138,3 +143,4 @@ void loop() {
   delay(100);
   
   }
+}

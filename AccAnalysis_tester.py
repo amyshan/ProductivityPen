@@ -2,7 +2,7 @@ import time
 import serial
 import smtplib
 
-ser = serial.Serial('/dev/cu.usbmodem621', 9600)
+ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 
 prodtime = 0;
 nulltime = 0;
@@ -48,19 +48,21 @@ while True:
 	#while time.time() < timeout:# while within interval, append values
 	while count < 10:
 		serialvalues = ser.readline()
-		#values = serialvalues
-		values = "".join([chr(c) for c in serialvalues])
+		values = serialvalues
+		#values = "".join([chr(c) for c in serialvalues])
 		#print(values)
 		numstring = ""
 		numarray = []
 		for x in values:
 			if x == " ":
-				num = int(float(numstring))
+				num = float(numstring)
+				#print(num)
 				numstring = ""
 				numarray.append(num)
 			else:
 				numstring += x
-		num = float(numstring)
+
+		num = float(numstring);
 		numstring = ""
 		numarray.append(num)
 
@@ -79,6 +81,8 @@ while True:
 			zdevarray.append(zarray[len(zarray)-2] - zarray[len(zarray)-1])
 
 		count = count + 1
+		print("count:")
+		print(count)
 
 	xdavg = abs(float(get_average(xdevarray)))
 
@@ -104,13 +108,24 @@ while True:
 #Case 3: Fidgeting - x: 15+, y: 15+ ,z: 15+
 
 #Case 1 - Still
-if xdavg < 0.2 and ydavg < 0.2 and zdavg < 0.2:
-	nulltime += timeelapsed
-#Case 2 - Writing
-if xdavg > 0.2 and xdavg < 1.4 and ydavg > 0.2 and ydavg < 1.4 and zdavg > 0.2 and zdavg < 1.4:
-	prodtime += timeelapsed
-#Case 3 - Fidgeting
-if ydavg > 1.4 or (xdavg > 1.4 or ydavg > 1.4):
-	nulltime += timeelasped
-print(prodtime)
-print(nulltime)
+	if xdavg < 0.2 and ydavg < 0.2 and zdavg < 0.2:
+		nulltime += timeelapsed
+	#Case 2 - Writing
+	if xdavg > 0.2 and xdavg < 1.4 and ydavg > 0.2 and ydavg < 1.4 and zdavg > 0.2 and zdavg < 1.4:
+		prodtime += timeelapsed
+	#Case 3 - Fidgeting
+	if ydavg > 1.4 or (xdavg > 1.4 or ydavg > 1.4):
+		nulltime += timeelasped
+	print(prodtime)
+	print("nulltime:")
+	print(nulltime)
+
+	if nulltime > 5:
+		ser.write("B")
+
+
+
+
+
+
+
