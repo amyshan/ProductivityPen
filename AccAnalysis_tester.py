@@ -2,16 +2,15 @@ import time
 import serial
 import smtplib
 
-ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
+ser = serial.Serial('/dev/cu.usbmodem621', 9600)
 
 prodtime = 0;
 nulltime = 0;
+stilltime = 0;
 
 x0 = 0;
 y0 = 0;
 z0 = 0;
-
-timeelapsed = 0
 
 def get_average(array1):
 	averagecounter = 0;
@@ -42,9 +41,8 @@ while True:
 	#while time.time() < timeout:# while within interval, append values
 	while count < 10:
 		serialvalues = ser.readline()
-		values = serialvalues
-		#print(values)
-		#values = "".join([chr(c) for c in serialvalues])
+		#values = serialvalues
+		values = "".join([chr(c) for c in serialvalues])
 		#print(values)
 		numstring = ""
 		numarray = []
@@ -95,43 +93,36 @@ while True:
 	timeelapsed = timeout - timein
 	print("time elapsed:")
 	print(timeelapsed)
-
-	#print(prodtime)
-	#print(nulltime)
-
 #Case 1: Still - x: 0 to 5, y: 0 to 5, z: 0 to 5
 #Case 2: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15
 #Case 3: Fidgeting - x: 15+, y: 15+ ,z: 15+
 
-#Case 1 - Still
-
-	nulltime += timeelapsed
-
+	#Case 1 - Still
 	if xdavg < 0.2 and ydavg < 0.2 and zdavg < 0.2:
 		nulltime += timeelapsed
+		stilltime += timeelapsed
 	#Case 2 - Writing
 	if xdavg > 0.2 and xdavg < 1.4 and ydavg > 0.2 and ydavg < 1.4 and zdavg > 0.2 and zdavg < 1.4:
 		prodtime += timeelapsed
+		stilltime = 0
 	#Case 3 - Fidgeting
 	if ydavg > 1.4 or (xdavg > 1.4 or ydavg > 1.4):
 		nulltime += timeelapsed
-	#print(prodtime)
-	
+		stilltime = 0
+	print("stilltime:")
+	print(stilltime)
+	print("prodtime")
+	print(prodtime)
 	print("nulltime:")
 	print(nulltime) #that's total nulltime so far
 
-	#nulltimealert = 10 #alert after 10 minutes
 
-	nulltime = 15
-
-	time.sleep(4)
-	
-	if nulltime > 10:
-		print "Sending serial data"
-		ser.write("Hello World")
-
-
-	
-
-		
+	if stilltime > 5:
+		stilltime = 0
+		print("YOU STILL SON")
+		time.sleep(2)
+		print ("Sending Serial data")
+		msg = "You still son"
+		bytesw = str.encode(msg)
+		ser.write(bytesw)
 
