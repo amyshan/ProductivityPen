@@ -68,11 +68,11 @@ char xVal, yVal, zVal;          // Return value variables
 char xinit, yinit, zinit;
 int button = 2; //Push button on data pin 2
 int buzzer = 3; //Buzzer for nulltime
-char nulltime;
-
+int ledpin = 13;
 void setup() {
   Serial.begin(9600);           // Use the Serial Monitor window at 9600 baud
   pinMode(button, INPUT);  //Initialize push-button
+  pinMode(ledpin, OUTPUT);
   // Set the g force sensitivity: 2=2g, 4=4g, 8-8g
   accel.initSensitivity(2);
   
@@ -101,6 +101,7 @@ void setup() {
   //Calibrate accel
   accel.calibrateOffset(xinit, yinit, zinit);
 
+  
   //Complete loop number 1 in the setup
   xVal = accel.readAxis('x');
   yVal = accel.readAxis('y');
@@ -114,19 +115,18 @@ void setup() {
 }
 
 void loop() {
-  //if digitalRead
-  //while (digitalRead(button) == HIGH) {
+   if(Serial.available() > 0){      // if data present, blink
+       digitalWrite(ledpin, HIGH);
+       delay(4000);             
+       digitalWrite(ledpin, LOW);
+       delay(1000);
+       Serial.flush();
+ }
  
   //Begin the continuous data loop again
   xVal = accel.readAxis('x');   // Read X Axis
   yVal = accel.readAxis('y');   // Read Y Axis
   zVal = accel.readAxis('z');   // Read Z Axis
-
-  if(Serial.available()){ // check whether Python sent anything
-      digitalWrite(13, HIGH); //turn on LED
-      //Serial.println("You've been idle for too long!"); // acknowledge data reception
-    }
-  
   
   Serial.print(xVal, DEC);
   Serial.print(" ");
@@ -137,6 +137,7 @@ void loop() {
   Serial.println(zVal, DEC);
   //Serial.print(" ");
   delay(100);
+ 
   
   }
 

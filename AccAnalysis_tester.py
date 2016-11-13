@@ -116,8 +116,22 @@ while True:
 	if ydavg > 1.4 or (xdavg > 1.4 or ydavg > 1.4):
 		nulltime += timeelapsed
 	#print(prodtime)
+	
 	print("nulltime:")
-	print(nulltime)
+	print(nulltime) #that's total nulltime so far
 
+	#nulltimealert = 10 #alert after 10 minutes
+
+	nulltime = 15
+
+	time.sleep(4)
+	
 	if nulltime > 10:
-		ser.write("B")
+		print "Sending serial data"
+		ser.write("Hello World")
+
+
+	
+
+		
+
