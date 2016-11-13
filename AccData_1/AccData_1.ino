@@ -125,24 +125,24 @@ void loop() {
   buttonState = digitalRead(button);
   if (buttonState == HIGH) {
     delay(2000);
-    //Serial.println("STARTRUNNING");
     startrunning = true;
   }
     while (startrunning) {
-
+      
       //Begin the continuous data loop again
       xVal = accel.readAxis('x');   // Read X Axis
       yVal = accel.readAxis('y');   // Read Y Axis
       zVal = accel.readAxis('z');   // Read Z Axis
+      //int count = 0;
 
-      if (Serial.available() > 0) {
+      if (Serial.readString() == "You still son") {
         digitalWrite(ledpin, HIGH);
         delay(3000);
         digitalWrite(ledpin, LOW);
         delay(1000);
         Serial.flush();
+        
       }
-
 
       Serial.print(xVal, DEC);
       Serial.print(" ");
@@ -162,7 +162,6 @@ void loop() {
         break;
       }
     }
-  
 }
 
 
