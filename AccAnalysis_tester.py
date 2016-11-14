@@ -3,11 +3,13 @@ import serial
 import smtplib
 from firebase import firebase
 
-ser = serial.Serial('/dev/cu.usbmodem621', 9600)
+ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 
 prodtime = 0;
 nulltime = 0;
-stilltime = 0;
+stilltime = 0
+alltimeruncount = 0;
+
 
 x0 = 0;
 y0 = 0;
@@ -41,42 +43,45 @@ while True:
 
 	#while time.time() < timeout:# while within interval, append values
 	while count < 10:
-		serialvalues = ser.readline()
-		#values = serialvalues
-		values = "".join([chr(c) for c in serialvalues])
-		#print(values)
-		numstring = ""
-		numarray = []
-		for x in values:
-			if x == " ":
-				num = float(numstring)
-				#print(num)
-				numstring = ""
-				numarray.append(num)
-			else:
-				numstring += x
+		if (alltimeruncount > 0):
+			serialvalues = ser.readline()
+			values = serialvalues
+			#values = "".join([chr(c) for c in serialvalues])
+			#print(values)
+			numstring = ""
+			numarray = []
+			for x in values:
+				#print(x)
+				if x == " ":
+					num = float(numstring)
+					#print(num)
+					numstring = ""
+					numarray.append(num)
+				else:
+					numstring += x
 
-		num = float(numstring);
-		numstring = ""
-		numarray.append(num)
+			num = float(numstring);
+			numstring = ""
+			numarray.append(num)
 
-		x0 = numarray[0]
-		y0 = numarray[1]
-		z0 = numarray[2]
+			x0 = numarray[0]
+			y0 = numarray[1]
+			z0 = numarray[2]
 
-		#add init values to x y and z array
-		xarray.append(x0);
-		yarray.append(y0);
-		zarray.append(z0);
+			#add init values to x y and z array
+			xarray.append(x0);
+			yarray.append(y0);
+			zarray.append(z0);
 
-		if count > 0:
-			xdevarray.append(xarray[len(xarray)-2] - xarray[(len(xarray)-1)])
-			ydevarray.append(yarray[len(yarray)-2] - yarray[len(yarray)-1])
-			zdevarray.append(zarray[len(zarray)-2] - zarray[len(zarray)-1])
+			if count > 0:
+				xdevarray.append(xarray[len(xarray)-2] - xarray[(len(xarray)-1)])
+				ydevarray.append(yarray[len(yarray)-2] - yarray[len(yarray)-1])
+				zdevarray.append(zarray[len(zarray)-2] - zarray[len(zarray)-1])
 
-		count = count + 1
-		print("count:")
-		print(count)
+			count = count + 1
+			#print("count:")
+			#print(count)
+		alltimeruncount += 1
 
 	xdavg = abs(float(get_average(xdevarray)))
 	ydavg = abs(float(get_average(ydevarray)))
@@ -93,15 +98,11 @@ while True:
 	timeelapsed = timeout - timein
 	print("time elapsed:")
 	print(timeelapsed)
-
-	print(prodtime)
-	print(nulltime)
 #Case 1: Still - x: 0 to 5, y: 0 to 5, z: 0 to 5
 #Case 2: Writing - x: 5 to 15, y: 0 to 15, z: 5 to 15
 #Case 3: Fidgeting - x: 15+, y: 15+ ,z: 15+
 
 	#Case 1 - Still
-	stilltime += timeelapsed
 	if xdavg < 0.2 and ydavg < 0.2 and zdavg < 0.2:
 		nulltime += timeelapsed
 		stilltime += timeelapsed
@@ -111,15 +112,28 @@ while True:
 		stilltime = 0
 	#Case 3 - Fidgeting
 	if ydavg > 1.4 or (xdavg > 1.4 or ydavg > 1.4):
-		nulltime += timeelasped
+		nulltime += timeelapsed
 		stilltime = 0
+	print("stilltime:")
+	print(stilltime)
+	print("prodtime")
 	print(prodtime)
 	print("nulltime:")
-	print(nulltime)
+	print(nulltime) #that's total nulltime so far
 
 	if stilltime > 5:
 		stilltime = 0
-		ser.write("B")
+
+		#ser.write("B") TODO: LOOK AT THIS
+
+		print("YOU STILL SON")
+		time.sleep(2)
+		print ("Sending Serial data")
+		msg = "You still son"
+		bytesw = str.encode(msg)
+		ser.write(bytesw)
+
+
 
 # Starting database
 firebase = firebase.FirebaseApplication('https://productivity-pen.firebaseio.com/')
