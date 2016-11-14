@@ -1,6 +1,7 @@
 import time
 import serial
 import smtplib
+from firebase import firebase
 
 ser = serial.Serial('/dev/cu.usbmodem621', 9600)
 
@@ -119,3 +120,10 @@ while True:
 	if stilltime > 5:
 		stilltime = 0
 		ser.write("B")
+
+# Starting database
+firebase = firebase.FirebaseApplication('https://productivity-pen.firebaseio.com/')
+new_user = 'Amy Shan'
+
+result = firebase.post('/users', new_user, {'print': 'pretty'}, {'X_FANCY_HEADER': 'VERY FANCY'})
+print(result)
